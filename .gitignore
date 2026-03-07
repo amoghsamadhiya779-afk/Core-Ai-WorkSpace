@@ -1,0 +1,14 @@
+#Ignore the virtual environment
+
+venv/
+
+#Ignore Python cache files
+
+pycache/
+*.pyc
+
+#Ignore large model files if you don't want them on GitHub
+
+#(We will leave this commented out for now since the Iris model is tiny)
+
+model/
