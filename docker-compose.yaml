@@ -1,0 +1,39 @@
+services:
+  # --- CONTAINER 1: The AI Brain ---
+  iris_ml_api:
+    build: 
+      context: ./ml_service
+    ports:
+      - "8000:8000"
+    networks:
+      - ai_network
+
+  # --- CONTAINER 2: The User Gateway ---
+  user_gateway_api:
+    build:
+      context: ./user_service
+    ports:
+      - "8001:8001"
+    depends_on:
+      - iris_ml_api
+      - mysql_db
+    networks:
+      - ai_network
+
+  # --- CONTAINER 3: The MySQL Database (Simulating AWS RDS) ---
+  mysql_db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: ai_prediction_db
+    ports:
+      - "3307:3306"  # <-- The DevOps fix: Laptop 3307 maps to Container 3306
+    volumes:
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - ai_network
+
+# --- THE PRIVATE NETWORK ---
+networks:
+  ai_network:
+    driver: bridge
